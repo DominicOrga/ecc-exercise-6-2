@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>com.ecc</groupId>
+  <groupId>com.ecc.app</groupId>
   <artifactId>exercise-6-2-app</artifactId>
   <version>1.0-SNAPSHOT</version>
 
