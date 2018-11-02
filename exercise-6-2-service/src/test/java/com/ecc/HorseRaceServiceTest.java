@@ -37,17 +37,16 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
-	public void givenMinHealthyHorsesIsGreaterThanNumberOfHorsesWhenGenerateHorsesThenThrowException() {
+	public void whenMinHealthyHorsesIsGreaterThanNumberOfHorsesWhenGenerateHorsesThenThrowException() {
 		this.numberOfHorses = 10;
 		this.minHealthyHorses = 11;
 
-		// Throwable thrown = catchThrowable(() -> {
-		// 	this.service = new HorseRaceService(numberOfHorses, minHealthyHorses, maxStartDistance, trackDistance);
-		// });
+		Throwable thrown = catchThrowable(() -> {
+			this.service = new HorseRaceService(numberOfHorses, minHealthyHorses, maxStartDistance, trackDistance);
+		});
 
-		// assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
-		// 				  .hasMessage("Number of horses must be greater than or equal to the min number of healthy horses.");
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+						  .hasMessage("Number of horses must be greater than or equal to the min number of healthy horses.");
 	}
 
 	@Test

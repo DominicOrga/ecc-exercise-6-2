@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
+import java.lang.IllegalArgumentException;
 
 public class HorseRaceService {
 
@@ -15,6 +16,10 @@ public class HorseRaceService {
 
 	public HorseRaceService(
 		int horseCount, int minHealthyHorseCount, float maxStartDistance, float trackDistance) {
+
+		if (horseCount < minHealthyHorseCount) {
+			throw new IllegalArgumentException("Number of horses must be greater than or equal to the min number of healthy horses.");
+		}
 
 		generateHorses(horseCount, minHealthyHorseCount);
 	}
