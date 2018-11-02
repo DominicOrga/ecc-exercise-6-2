@@ -17,6 +17,10 @@ public class HorseRaceService {
 	public HorseRaceService(
 		int horseCount, int minHealthyHorseCount, float maxStartDistance, float trackDistance) {
 
+		if (horseCount < 1) {
+			throw new IllegalArgumentException("Horse count should at least be one.");
+		}
+
 		if (minHealthyHorseCount < 0) {
 			throw new IllegalArgumentException("Minimum healthy horse count must be a whole number.");
 		}

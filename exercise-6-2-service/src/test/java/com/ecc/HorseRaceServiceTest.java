@@ -10,41 +10,41 @@ import java.lang.IllegalArgumentException;
 
 public class HorseRaceServiceTest {
 	
-	private int numberOfHorses;
-	private int minHealthyHorses;
+	private int horseCount;
+	private int minHealthyHorseCount;
 	private float maxStartDistance;
 	private float trackDistance;
 	private HorseRaceService service;
 
 	@Before
 	public void setDefaultConstructorArgs() {
-		this.numberOfHorses = 100;
-		this.minHealthyHorses = 10;
+		this.horseCount = 100;
+		this.minHealthyHorseCount = 10;
 		this.maxStartDistance = 10f;
 		this.trackDistance = 100f;
 
 		this.service = new HorseRaceService(
-			numberOfHorses, minHealthyHorses, maxStartDistance, trackDistance);
+			this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
 	}
 
 	@Test
 	public void givenMinHealthyHorseCountThenGenerateGreaterThanOrEqualNumberOfHealthyHorses() {
-		assertThat(this.service.getHealthyHorseCount()).isGreaterThanOrEqualTo(this.minHealthyHorses);
+		assertThat(this.service.getHealthyHorseCount()).isGreaterThanOrEqualTo(this.minHealthyHorseCount);
 	}
 
 	@Test
 	public void givenHorseCountThenGenerateEqualNumberOfHorses() {
-		assertThat(this.service.getHorseCount()).isEqualTo(this.numberOfHorses);
+		assertThat(this.service.getHorseCount()).isEqualTo(this.horseCount);
 	}
 
 	@Test
 	public void whenMinHealthyHorseCountIsGreaterThanHorseCountWhenGenerateHorsesThenThrowException() {
-		this.numberOfHorses = 10;
-		this.minHealthyHorses = 11;
+		this.horseCount = 10;
+		this.minHealthyHorseCount = 11;
 
 		Throwable thrown = catchThrowable(() -> {
 			this.service = new HorseRaceService(
-				this.numberOfHorses, this.minHealthyHorses, this.maxStartDistance, this.trackDistance);
+				this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
 		});
 
 		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
@@ -54,11 +54,11 @@ public class HorseRaceServiceTest {
 
 	@Test
 	public void whenMinHealthyHorseCountIsNegativeThenThrowException() {
-		this.minHealthyHorses = -1;
+		this.minHealthyHorseCount = -1;
 
 		Throwable thrown = catchThrowable(() -> {
 			this.service = new HorseRaceService(
-				this.numberOfHorses, this.minHealthyHorses, this.maxStartDistance, this.trackDistance);
+				this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
 		});
 
 		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
@@ -66,9 +66,16 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
-	public void whenHorseCountIsNegativeThenThrowException() {
+	public void whenHorseCountIsLessThanOneThenThrowException() {
+		this.horseCount = 0;
 
+		Throwable thrown = catchThrowable(() -> {
+			this.service = new HorseRaceService(
+				this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
+		});
+
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+						  .hasMessage("Horse count should at least be one.");
 	}
 
 	@Test
