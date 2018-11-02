@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>com.ecc</groupId>
-  <artifactId>exercise6-2-app</artifactId>
+  <artifactId>exercise-6-2-app</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>exercise6-2-app</name>
