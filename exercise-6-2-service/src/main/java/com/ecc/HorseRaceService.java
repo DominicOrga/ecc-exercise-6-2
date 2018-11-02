@@ -29,6 +29,10 @@ public class HorseRaceService {
 			throw new IllegalArgumentException("Max start distance must be a positive float number.");
 		}
 
+		if (trackDistance <= 0) {
+			throw new IllegalArgumentException("Track distance must be greater than 0.");
+		}
+
 		if (horseCount < minHealthyHorseCount) {
 			throw new IllegalArgumentException("Number of horses must be greater than or equal " + 
 											   "to the min number of healthy horses.");

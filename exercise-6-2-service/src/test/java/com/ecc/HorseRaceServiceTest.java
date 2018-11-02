@@ -92,9 +92,16 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
-	public void whenTrackDistanceIsEqualToZeroThanOneThenThrowException() {
+	public void whenTrackDistanceIsLessThanOrEqualToZeroThenThrowException() {
+		this.trackDistance = 0;	
 		
+		Throwable thrown = catchThrowable(() -> {
+			this.service = new HorseRaceService(
+				this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
+		});
+
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+						  .hasMessage("Track distance must be greater than 0.");			
 	}
 
 	@Test
