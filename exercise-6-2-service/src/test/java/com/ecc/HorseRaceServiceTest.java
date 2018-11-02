@@ -1,8 +1,12 @@
 package com.ecc.service;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Ignore;
+
+import java.lang.IllegalArgumentException;
 
 public class HorseRaceServiceTest {
 	
@@ -23,13 +27,33 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	public void givenAMinNumberOfHealthyHorsesThenGenerateGreaterThanOrEqualNumberOfHealthyHorses() {
+	public void givenMinNumberOfHealthyHorsesThenGenerateGreaterThanOrEqualNumberOfHealthyHorses() {
 		assertThat(this.service.getHealthyHorseCount()).isGreaterThanOrEqualTo(this.minHealthyHorses);
 	}
 
 	@Test
 	@Ignore
-	public void givenminHealthyHorsesIsGreaterThanNumberOfHorsesWhenGenerateHorsesThenThrowException() {
+	public void givenNumberOfHorsesThenGenerateEqualNumberOfHorses() {
+
+	}
+
+	@Test
+	@Ignore
+	public void givenMinHealthyHorsesIsGreaterThanNumberOfHorsesWhenGenerateHorsesThenThrowException() {
+		this.numberOfHorses = 10;
+		this.minHealthyHorses = 11;
+
+		// Throwable thrown = catchThrowable(() -> {
+		// 	this.service = new HorseRaceService(numberOfHorses, minHealthyHorses, maxStartDistance, trackDistance);
+		// });
+
+		// assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+		// 				  .hasMessage("Number of horses must be greater than or equal to the min number of healthy horses.");
+	}
+
+	@Test
+	@Ignore
+	public void whenMaxStartDistanceIsGreaterThanOrEqualToTrackDistanceThenThrowException() {
 
 	}
 }
