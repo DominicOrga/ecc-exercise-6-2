@@ -105,8 +105,16 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void whenMaxStartDistanceIsGreaterThanOrEqualToTrackDistanceThenThrowException() {
+		this.maxStartDistance = 11;
+		this.trackDistance = 10;
 
+		Throwable thrown = catchThrowable(() -> {
+			this.service = new HorseRaceService(
+				this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
+		});
+
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+						  .hasMessage("Track distance must be greater than max start distance.");	
 	}
 }

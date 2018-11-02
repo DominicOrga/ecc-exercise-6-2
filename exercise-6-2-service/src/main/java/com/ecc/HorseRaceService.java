@@ -38,6 +38,10 @@ public class HorseRaceService {
 											   "to the min number of healthy horses.");
 		}
 
+		if (trackDistance <= maxStartDistance) {
+			throw new IllegalArgumentException("Track distance must be greater than max start distance.");
+		}
+
 		generateHorses(horseCount, minHealthyHorseCount);
 	}
 
