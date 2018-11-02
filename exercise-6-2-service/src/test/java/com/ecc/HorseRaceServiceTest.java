@@ -32,9 +32,8 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void givenNumberOfHorsesThenGenerateEqualNumberOfHorses() {
-
+		assertThat(this.service.getHorseCount()).isEqualTo(this.numberOfHorses);
 	}
 
 	@Test
