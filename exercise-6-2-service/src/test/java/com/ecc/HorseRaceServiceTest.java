@@ -79,15 +79,22 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void whenMaxStartDistanceIsNegativeThenThrowException() {
+		this.maxStartDistance = -1;	
+		
+		Throwable thrown = catchThrowable(() -> {
+			this.service = new HorseRaceService(
+				this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
+		});
 
+		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+						  .hasMessage("Max start distance must be a positive float number.");	
 	}
 
 	@Test
 	@Ignore
-	public void whenTrackDistanceIsNegativeThenThrowException() {
-
+	public void whenTrackDistanceIsEqualToZeroThanOneThenThrowException() {
+		
 	}
 
 	@Test
