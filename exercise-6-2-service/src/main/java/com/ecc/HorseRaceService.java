@@ -22,6 +22,7 @@ public class HorseRaceService {
 	private Horse horseLastBoosted;
 
 	private List<Consumer<String>> raceWinReportListeners = new ArrayList<>();
+	private List<Consumer<String>> raceStateReportListeners = new ArrayList<>();
 
 	public HorseRaceService(
 		int horseCount, int minHealthyHorseCount, float maxStartDistance, float trackDistance) {
@@ -147,18 +148,15 @@ public class HorseRaceService {
 			}
 
 			horse.run(distance);
-
-			if (isHorseFinished(horse) && getHorseWinner() == null) {
-				this.horseWinner = horse;
-			}
+			handleRaceStateReport(horse, distance, isLastHorse, horseRacerSnapshot);
 		});
 
 		if (isRaceFinished()) {
-			for (Consumer consumer : this.raceWinReportListeners) {
-				consumer.accept(String.format("%s has won the race! [Warcry: %s]", 
+			this.raceWinReportListeners.forEach(listener -> {
+				listener.accept(String.format("%s has won the race! [Warcry: %s]", 
 					getHorseWinner().getName(), 
 					getHorseWinner().getWarcry()));
-			}
+			});
 		}
 	}
 
@@ -171,7 +169,64 @@ public class HorseRaceService {
 		}
 	}
 
+	private void handleRaceStateReport(
+		final Horse horse, final float distanceTravelled, 
+		final boolean isBoosted, List<Horse> horseRacersSnapshot) {
+
+		if (isHorseFinished(horse)) {
+			if (getHorseWinner() == null) {
+				this.horseWinner = horse;
+			}
+			else {
+				this.raceStateReportListeners.forEach(listener -> {
+					listener.accept(
+						String.format("%s has finished the race.", horse.getName()));
+					});	
+			}
+		}
+		else {
+			if (isBoosted) {
+				this.raceStateReportListeners.forEach(listener -> {
+					StringBuilder sb = new StringBuilder();
+					sb.append(String.format("%s needs a boost. ", horse.getName()));
+					sb.append("[");
+					sb.append(horseRacersSnapshot.stream()
+												 .map(horseSnapshot -> 
+												     horseSnapshot.getName() + ": " + 
+												     horseSnapshot.getDistanceTravelled())
+												 .collect(Collectors.joining(", ")));
+					sb.append("]");
+
+					listener.accept(sb.toString());	
+				});
+			}
+			else {
+				this.raceStateReportListeners.forEach(listener -> {
+					listener.accept(
+						String.format("%s ran %,.2f units. %,.2f units left", 
+							horse.getName(), distanceTravelled, this.trackDistance - horse.getDistanceTravelled()));
+					});	
+			}
+		}
+
+		if (isHorseFinished(horse) && getHorseWinner() == null) {
+			this.horseWinner = horse;
+		}
+	}
+
 	public void addRaceWinReportListener(Consumer<String> listener) {
 		this.raceWinReportListeners.add(listener);
+	}
+
+	public void removeRaceWinReportListener(Consumer<String> listener) {
+		this.raceWinReportListeners.remove(listener);
+	}
+
+	public void addRaceStateReportListener(Consumer<String> listener) {
+		this.raceStateReportListeners.add(listener);
+	}
+
+	public void removeRaceStateReportListener(Consumer<String> listener) {
+		this.raceStateReportListeners.remove(listener);
 	}
 }

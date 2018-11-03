@@ -149,7 +149,7 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	public void whenHorseFinishedFirstThenReceiveWinMessage() {
+	public void whenHorseFinishedFirstThenReceiveWinMessageOnce() {
 		Consumer raceWinReportCallback = mock(Consumer.class);
 
 		this.service.addRaceWinReportListener(raceWinReportCallback);
@@ -159,7 +159,12 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	public void whenHorseRanThenReceiveRunMessage() {
+	public void whenHorseRanThenReceiveEqualNumberOfMessages() {
+		Consumer raceStateReportCallback = mock(Consumer.class);
 
+		this.service.addRaceStateReportListener(raceStateReportCallback);
+		this.service.runProgressive();
+
+		verify(raceStateReportCallback, times(this.minHealthyHorseCount)).accept(any(String.class));
 	}
 }
