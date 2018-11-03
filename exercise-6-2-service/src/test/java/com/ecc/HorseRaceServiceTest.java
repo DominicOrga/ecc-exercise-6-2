@@ -2,11 +2,14 @@ package com.ecc.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import com.ecc.model.Horse;
+
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Ignore;
 
 import java.lang.IllegalArgumentException;
+import java.util.List;
 
 public class HorseRaceServiceTest {
 	
@@ -25,16 +28,6 @@ public class HorseRaceServiceTest {
 
 		this.service = new HorseRaceService(
 			this.horseCount, this.minHealthyHorseCount, this.maxStartDistance, this.trackDistance);
-	}
-
-	@Test
-	public void givenMinHealthyHorseCountThenGenerateGreaterThanOrEqualNumberOfHealthyHorses() {
-		assertThat(this.service.getHealthyHorseCount()).isGreaterThanOrEqualTo(this.minHealthyHorseCount);
-	}
-
-	@Test
-	public void givenHorseCountThenGenerateEqualNumberOfHorses() {
-		assertThat(this.service.getHorseCount()).isEqualTo(this.horseCount);
 	}
 
 	@Test
@@ -117,4 +110,40 @@ public class HorseRaceServiceTest {
 		assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
 						  .hasMessage("Track distance must be greater than max start distance.");	
 	}
+
+	@Test
+	public void givenMinHealthyHorseCountThenGenerateGreaterThanOrEqualNumberOfHealthyHorses() {
+		assertThat(this.service.getHealthyHorseCount()).isGreaterThanOrEqualTo(this.minHealthyHorseCount);
+	}
+
+	@Test
+	public void givenHorseCountThenGenerateEqualNumberOfHorses() {
+		assertThat(this.service.getHorseCount()).isEqualTo(this.horseCount);
+	}
+
+	@Test
+	public void whenHorsesRunThenIncreaseTheirDistance() {
+		List<Horse> horsePositions = this.service.getHorseRacerSnapshot();
+
+		assertThat(horsePositions.get(0).getDistanceTravelled()).isEqualTo(0.0f);
+
+		this.service.runProgressive();
+
+		List<Horse> newHorsePositions = this.service.getHorseRacerSnapshot();
+
+		assertThat(newHorsePositions.get(0).getDistanceTravelled())
+			.isGreaterThan(horsePositions.get(0).getDistanceTravelled());
+	}
+
+	@Test
+	public void whenHorseFinishedDoNotRun() {
+
+	}
+
+	@Test
+	@Ignore
+	public void whenHorseFinishedFirstThenShoutWarcry() {}
+
+
+	
 }
