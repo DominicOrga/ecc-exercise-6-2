@@ -122,20 +122,46 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
+	public void whenHorseRaceInitThenHorsesStartDistanceMustBeBetweenZeroAndMaxStartDistance() {
+		this.service.getHorseRacerSnapshot().forEach(horse -> {
+			assertThat(horse.getDistanceTravelled()).isLessThan(this.maxStartDistance);
+			assertThat(horse.getDistanceTravelled()).isGreaterThan(0);
+		});
+	}
+
+	@Test
 	public void whenHorsesRunThenIncreaseTheirDistance() {
 		List<Horse> horsePositions = this.service.getHorseRacerSnapshot();
 
-		assertThat(horsePositions.get(0).getDistanceTravelled()).isEqualTo(0.0f);
+		float distanceTravelled = horsePositions.get(0).getDistanceTravelled();
 
 		this.service.runProgressive();
 
 		List<Horse> newHorsePositions = this.service.getHorseRacerSnapshot();
 
-		assertThat(newHorsePositions.get(0).getDistanceTravelled())
-			.isGreaterThan(horsePositions.get(0).getDistanceTravelled());
+		assertThat(newHorsePositions.get(0).getDistanceTravelled()).isGreaterThan(distanceTravelled);
 	}
 
 	@Test
+	@Ignore
+	public void whenLastHorseRunThenBoost() {
+		List<Horse> horses = this.service.getHorseRacerSnapshot();
+		Horse lastHorse = horses.get(0);
+
+		for (Horse horse : horses) {
+			if (horse.getDistanceTravelled() < lastHorse.getDistanceTravelled()) {
+				lastHorse = horse;
+			}
+		}
+
+		this.service.runProgressive();
+
+		assertThat(this.service.getLastBoostedHorse().getHorseNumber())
+			.isEqualTo(lastHorse.getHorseNumber());
+	}
+
+	@Test
+	@Ignore
 	public void whenHorseFinishedDoNotRun() {
 
 	}
