@@ -1,17 +1,22 @@
 package com.ecc.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.ecc.model.Horse;
+
+import org.mockito.runners.MockitoJUnitRunner;
 
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.runner.RunWith;
 
 import java.lang.IllegalArgumentException;
 import java.util.List;
 import java.util.function.Consumer;
 
+@RunWith(MockitoJUnitRunner.class)
 public class HorseRaceServiceTest {
 	
 	private int horseCount;
@@ -143,13 +148,18 @@ public class HorseRaceServiceTest {
 		assertThat(newHorsePositions.get(0).getDistanceTravelled()).isGreaterThan(distanceTravelled);
 	}
 
-	// @Test
-	// public void whenHorseFinishedFirstThenShoutWarcry() {
-	// 	Consumer<String> raceWinReportCallback = (String message) -> { 
-	// 		assertThat(message).contains(" has won the race! [Warcry: ")
-	// 						   .endsWith("]");
-	// 	}; 
+	@Test
+	public void whenHorseFinishedFirstThenReceiveWinMessage() {
+		Consumer raceWinReportCallback = mock(Consumer.class);
 
-	// 	this.service.addRaceWinReportListener(raceWinReportCallback);
-	// }
+		this.service.addRaceWinReportListener(raceWinReportCallback);
+		this.service.runComplete();
+
+		verify(raceWinReportCallback, times(1)).accept(any(String.class));
+	}
+
+	@Test
+	public void whenHorseRanThenReceiveRunMessage() {
+
+	}
 }

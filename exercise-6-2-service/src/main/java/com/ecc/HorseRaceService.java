@@ -105,7 +105,7 @@ public class HorseRaceService {
 		return horse.getDistanceTravelled() >= this.trackDistance;
 	}
 
-	public Horse getHorseWinnner() {
+	public Horse getHorseWinner() {
 		return this.horseWinner;
 	}
 
@@ -147,7 +147,28 @@ public class HorseRaceService {
 			}
 
 			horse.run(distance);
+
+			if (isHorseFinished(horse) && getHorseWinner() == null) {
+				this.horseWinner = horse;
+			}
 		});
+
+		if (isRaceFinished()) {
+			for (Consumer consumer : this.raceWinReportListeners) {
+				consumer.accept(String.format("%s has won the race! [Warcry: %s]", 
+					getHorseWinner().getName(), 
+					getHorseWinner().getWarcry()));
+			}
+		}
+	}
+
+	public void runComplete() {
+		boolean isRaceStarted = false;
+
+		while (!isRaceFinished()) {
+			isRaceStarted = true;
+			runProgressive();
+		}
 	}
 
 	public void addRaceWinReportListener(Consumer<String> listener) {
