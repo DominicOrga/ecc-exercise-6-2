@@ -115,7 +115,7 @@ public class HorseRaceService {
 			return;
 		}
 
-		this.healthyHorseRacers.forEach(horse -> {
+		this.healthyHorseRacers.parallelStream().forEach(horse -> {
 			if (isHorseFinished(horse)) {
 				return;
 			}
@@ -124,7 +124,9 @@ public class HorseRaceService {
 			boolean isLastHorse = true;
 
 			for (Horse horseSnapshot : getHorseRacerSnapshot()) {
-				if (horseSnapshot.getDistanceTravelled() <= horse.getDistanceTravelled()) {
+				if (horseSnapshot.getDistanceTravelled() <= horse.getDistanceTravelled() &&
+					!horseSnapshot.equals(horse)) {
+					
 					isLastHorse = false;
 					break;
 				}

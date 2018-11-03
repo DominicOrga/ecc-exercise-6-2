@@ -12,4 +12,11 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>exercise-6-2-model</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+  </dependencies>
 </project>

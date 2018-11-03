@@ -143,13 +143,12 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void whenLastHorseRunThenBoost() {
 		List<Horse> horses = this.service.getHorseRacerSnapshot();
 		Horse lastHorse = horses.get(0);
 
-		for (Horse horse : horses) {
-			if (horse.getDistanceTravelled() < lastHorse.getDistanceTravelled()) {
+		for (Horse horse : horses) {	
+			if (horse.getDistanceTravelled() <= lastHorse.getDistanceTravelled()) {
 				lastHorse = horse;
 			}
 		}
