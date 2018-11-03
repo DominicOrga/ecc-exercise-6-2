@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
+import java.util.function.Consumer;
 import java.lang.IllegalArgumentException;
 
 public class HorseRaceService {
@@ -19,6 +20,8 @@ public class HorseRaceService {
 	private List<Horse> healthyHorseRacers;
 	private Horse horseWinner;
 	private Horse horseLastBoosted;
+
+	private List<Consumer<String>> raceWinReportListeners = new ArrayList<>();
 
 	public HorseRaceService(
 		int horseCount, int minHealthyHorseCount, float maxStartDistance, float trackDistance) {
@@ -126,7 +129,7 @@ public class HorseRaceService {
 			for (Horse horseSnapshot : getHorseRacerSnapshot()) {
 				if (horseSnapshot.getDistanceTravelled() <= horse.getDistanceTravelled() &&
 					!horseSnapshot.equals(horse)) {
-					
+
 					isLastHorse = false;
 					break;
 				}
@@ -145,6 +148,9 @@ public class HorseRaceService {
 
 			horse.run(distance);
 		});
+	}
 
+	public void addRaceWinReportListener(Consumer<String> listener) {
+		this.raceWinReportListeners.add(listener);
 	}
 }

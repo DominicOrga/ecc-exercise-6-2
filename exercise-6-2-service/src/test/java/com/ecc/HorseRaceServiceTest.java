@@ -10,6 +10,7 @@ import org.junit.Ignore;
 
 import java.lang.IllegalArgumentException;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class HorseRaceServiceTest {
 	
@@ -142,33 +143,13 @@ public class HorseRaceServiceTest {
 		assertThat(newHorsePositions.get(0).getDistanceTravelled()).isGreaterThan(distanceTravelled);
 	}
 
-	@Test
-	public void whenLastHorseRunThenBoost() {
-		List<Horse> horses = this.service.getHorseRacerSnapshot();
-		Horse lastHorse = horses.get(0);
+	// @Test
+	// public void whenHorseFinishedFirstThenShoutWarcry() {
+	// 	Consumer<String> raceWinReportCallback = (String message) -> { 
+	// 		assertThat(message).contains(" has won the race! [Warcry: ")
+	// 						   .endsWith("]");
+	// 	}; 
 
-		for (Horse horse : horses) {	
-			if (horse.getDistanceTravelled() <= lastHorse.getDistanceTravelled()) {
-				lastHorse = horse;
-			}
-		}
-
-		this.service.runProgressive();
-
-		assertThat(this.service.getLastBoostedHorse().getHorseNumber())
-			.isEqualTo(lastHorse.getHorseNumber());
-	}
-
-	@Test
-	@Ignore
-	public void whenHorseFinishedDoNotRun() {
-
-	}
-
-	@Test
-	@Ignore
-	public void whenHorseFinishedFirstThenShoutWarcry() {}
-
-
-	
+	// 	this.service.addRaceWinReportListener(raceWinReportCallback);
+	// }
 }
