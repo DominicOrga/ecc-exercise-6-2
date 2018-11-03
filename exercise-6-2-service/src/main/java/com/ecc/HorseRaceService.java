@@ -21,7 +21,8 @@ public class HorseRaceService {
 	private Horse horseWinner;
 	private Horse horseLastBoosted;
 
-	private List<Consumer<String>> raceWinReportListeners = new ArrayList<>();
+	private int finishPosition;
+
 	private List<Consumer<String>> raceStateReportListeners = new ArrayList<>();
 
 	public HorseRaceService(
@@ -119,7 +120,7 @@ public class HorseRaceService {
 			return;
 		}
 
-		this.healthyHorseRacers.parallelStream().forEach(horse -> {
+		this.healthyHorseRacers.forEach(horse -> {
 			if (isHorseFinished(horse)) {
 				return;
 			}
@@ -148,78 +149,63 @@ public class HorseRaceService {
 			}
 
 			horse.run(distance);
-			handleRaceStateReport(horse, distance, isLastHorse, horseRacerSnapshot);
-		});
 
-		if (isRaceFinished()) {
-			this.raceWinReportListeners.forEach(listener -> {
-				listener.accept(String.format("%s has won the race! [Warcry: %s]", 
-					getHorseWinner().getName(), 
-					getHorseWinner().getWarcry()));
-			});
-		}
+			if (isHorseFinished(horse) && getHorseWinner() == null) {
+				this.horseWinner = horse;
+			}
+
+			dispatchReportRaceState(horse, distance, isLastHorse, horseRacerSnapshot);
+		});
 	}
 
 	public void runComplete() {
-		boolean isRaceStarted = false;
-
 		while (!isRaceFinished()) {
-			isRaceStarted = true;
 			runProgressive();
 		}
 	}
 
-	private void handleRaceStateReport(
+	private void dispatchReportRaceState(
 		final Horse horse, final float distanceTravelled, 
 		final boolean isBoosted, List<Horse> horseRacersSnapshot) {
 
+		StringBuilder sb = new StringBuilder();
+
+		if (isBoosted) {
+			sb.append(String.format("%s needs a boost. ", horse.getName()));
+			sb.append("[");
+			sb.append(horseRacersSnapshot.stream()
+										 .map(horseSnapshot -> 
+										     horseSnapshot.getName() + ": " + 
+										     horseSnapshot.getDistanceTravelled())
+										 .collect(Collectors.joining(", ")));
+			sb.append("]\n");
+		}
+
 		if (isHorseFinished(horse)) {
-			if (getHorseWinner() == null) {
-				this.horseWinner = horse;
-			}
-			else {
-				this.raceStateReportListeners.forEach(listener -> {
-					listener.accept(
-						String.format("%s has finished the race.", horse.getName()));
-					});	
+			int newFinishPosition = ++finishPosition;
+
+			sb.append(String.format(
+				"%s has finished race in %d%s place.", 
+				horse.getName(), 
+				newFinishPosition, 
+				newFinishPosition % 10 == 1 ? "st" :
+					newFinishPosition % 10 == 2 ? "nd" : 
+						newFinishPosition == 3 ? "rd" : "th"));
+
+			if (newFinishPosition == 1) {
+				sb.append(String.format(" [Warcry: %s]", horse.getWarcry()));
 			}
 		}
 		else {
-			if (isBoosted) {
-				this.raceStateReportListeners.forEach(listener -> {
-					StringBuilder sb = new StringBuilder();
-					sb.append(String.format("%s needs a boost. ", horse.getName()));
-					sb.append("[");
-					sb.append(horseRacersSnapshot.stream()
-												 .map(horseSnapshot -> 
-												     horseSnapshot.getName() + ": " + 
-												     horseSnapshot.getDistanceTravelled())
-												 .collect(Collectors.joining(", ")));
-					sb.append("]");
-
-					listener.accept(sb.toString());	
-				});
-			}
-			else {
-				this.raceStateReportListeners.forEach(listener -> {
-					listener.accept(
-						String.format("%s ran %,.2f units. %,.2f units left", 
-							horse.getName(), distanceTravelled, this.trackDistance - horse.getDistanceTravelled()));
-					});	
-			}
+			sb.append(String.format("%s ran %,.2f units. %,.2f units left.", 
+						horse.getName(), 
+						distanceTravelled, 
+						this.trackDistance - horse.getDistanceTravelled()));			
 		}
 
-		if (isHorseFinished(horse) && getHorseWinner() == null) {
-			this.horseWinner = horse;
+		for (Consumer<String> listener : this.raceStateReportListeners) {
+			listener.accept(sb.toString());
 		}
-	}
-
-	public void addRaceWinReportListener(Consumer<String> listener) {
-		this.raceWinReportListeners.add(listener);
-	}
-
-	public void removeRaceWinReportListener(Consumer<String> listener) {
-		this.raceWinReportListeners.remove(listener);
 	}
 
 	public void addRaceStateReportListener(Consumer<String> listener) {

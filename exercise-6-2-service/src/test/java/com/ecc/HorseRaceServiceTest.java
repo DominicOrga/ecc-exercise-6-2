@@ -149,16 +149,6 @@ public class HorseRaceServiceTest {
 	}
 
 	@Test
-	public void whenHorseFinishedFirstThenReceiveWinMessageOnce() {
-		Consumer raceWinReportCallback = mock(Consumer.class);
-
-		this.service.addRaceWinReportListener(raceWinReportCallback);
-		this.service.runComplete();
-
-		verify(raceWinReportCallback, times(1)).accept(any(String.class));
-	}
-
-	@Test
 	public void whenHorseRanThenReceiveEqualNumberOfMessages() {
 		Consumer raceStateReportCallback = mock(Consumer.class);
 
