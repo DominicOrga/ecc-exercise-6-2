@@ -19,7 +19,6 @@ public class HorseRaceService {
 	private List<Horse> horses;
 	private List<Horse> healthyHorseRacers;
 	private Horse horseWinner;
-	private Horse horseLastBoosted;
 
 	private int finishPosition;
 
@@ -111,10 +110,6 @@ public class HorseRaceService {
 		return this.horseWinner;
 	}
 
-	public Horse getLastBoostedHorse() {
-		return this.horseLastBoosted;
-	}
-
 	public void runProgressive() {
 		if (isRaceFinished()) {
 			return;
@@ -141,8 +136,6 @@ public class HorseRaceService {
 
 			if (isLastHorse) {
 				distance = (float) Math.random() * 20;
-				this.horseLastBoosted = horse;
-				horse.run(distance);
 			}
 			else {
 				distance = (float) Math.random() * 10;
